@@ -12,9 +12,13 @@ import requests
 # from pyorbital.orbital import Orbital
 # satellite = Orbital('TERRA')
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash()
+app.css.config.serve_locally = True
+app.scripts.config.serve_locally = True
+app.config.assets_folder = 'assets'     # The path to the assets folder.
+app.config.include_asset_files = True   # Include the files in the asset folder
+app.config.assets_external_path = ""    # The external prefix if serve_locally == False
+app.config.assets_url_path = '/assets'  # the local url prefix ie `/assets/*.js`
 app.layout = html.Div(
     html.Div([
         html.H4('Traffic of University Foyer'),
@@ -56,7 +60,7 @@ def update_graph_live(n):
     # Collect some data
     # for i in range(180):
     # time = datetime.datetime.now()
-    response = requests.get("http://localhost:5000/")
+    response = requests.get("http://192.168.0.102:5000/")
 
     for traffic in response.json():
         data['traffic'].append(traffic['traffic'])
@@ -84,4 +88,4 @@ def update_graph_live(n):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, host="0.0.0.0", port=8080)
